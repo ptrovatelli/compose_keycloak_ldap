@@ -1,0 +1,70 @@
+name: keycloak_stack
+services:
+  
+
+  postgresql:
+    image: postgres:13
+    container_name: keycloak_postgres_container
+    ports:
+      - "5435:5435"
+    environment:
+      POSTGRES_DB: keycloakdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    container_name: keycloak_container
+    depends_on:
+      - postgresql
+    environment:
+      
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      
+      KC_DB: postgres
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+      KC_DB_URL_HOST: postgresql
+      KC_DB_URL_DATABASE: keycloakdb
+      
+      KC_HOSTNAME: localhost
+    command:
+      
+      - start-dev
+    ports:
+      - "8080:8080"
+  openldap:
+    image: osixia/openldap:latest
+    environment:
+      LDAP_ORGANISATION: "Your Organization"
+      LDAP_DOMAIN: "example.org"
+      LDAP_ADMIN_PASSWORD: "admin_password"
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+    networks:
+      - keycloak_stack_default # Utilisez le réseau existant de Keycloak
+
+  ldap-admin:
+    image: osixia/phpldapadmin
+    container_name: ldap_admin_container
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: openldap
+      PHPLDAPADMIN_HTTPS: "false"
+      APACHE_SERVER_NAME: "localhost"
+    ports:
+      - "8099:80"
+    depends_on:
+      - openldap
+# Utilisez le réseau existant au lieu d'en créer un nouveau
+networks:
+  keycloak_stack_default:
+    external: true  # Indique que ce réseau existe déjà
+volumes:
+  ldap_data:
+  ldap_config:
