@@ -1,0 +1,119 @@
+dn: ou=users,dc=example,dc=org
+changetype: add
+ou: users
+objectClass: organizationalUnit
+objectClass: top
+
+dn: cn=remote_test_user_1@test.com,ou=users,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+displayName: Remote
+gidNumber: 0
+homeDirectory: /home/customuser
+givenName: remote
+sn: User_1
+uid: bccfb244-dc3e-11ec-9d64-0242ac120002
+mail: remote_test_user_1@test.com
+uidNumber: 1001
+userPassword: password
+mobile: 0797123455
+
+dn: cn=remote_test_user_2@test.com,ou=users,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+displayName: Remote
+gidNumber: 0
+homeDirectory: /home/customuser
+givenName: remote
+sn: User_2
+uid: b171aa24-dc3e-11ec-9d64-0242ac120002
+mail: remote_test_user_2@test.com
+uidNumber: 1001
+userPassword: password
+mobile: 0797223456
+
+dn: cn=remote_test_user_3@test.com,ou=users,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+displayName: Remote
+gidNumber: 0
+homeDirectory: /home/customuser
+givenName: remote
+sn: User_3
+uid: 948140fa-dc3e-11ec-9d64-0242ac120002
+mail: remote_test_user_3@test.com
+uidNumber: 1001
+userPassword: password
+mobile: 0797323457
+
+dn: cn=remote_test_user_4@test.com,ou=users,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+displayName: Remote
+gidNumber: 0
+homeDirectory: /home/customuser
+givenName: remote
+sn: User_4
+uid: 9e0c1bcc-dc3e-11ec-9d64-0242ac120002
+mail: remote_test_user_4@test.com
+uidNumber: 1001
+userPassword: password
+mobile: 0797423458
+
+dn: cn=remote_test_user_5@test.com,ou=users,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+displayName: Remote
+gidNumber: 0
+homeDirectory: /home/customuser
+givenName: remote
+sn: User_5
+uid: a920e0ec-dc3e-11ec-9d64-0242ac120002
+mail: remote_test_user_5@test.com
+uidNumber: 1001
+userPassword: password
+mobile: 0797523459
+
+dn: ou=groups,dc=example,dc=org
+changetype: add
+ou: groups
+objectClass: organizationalUnit
+objectClass: top
+
+dn: ou=test,ou=groups,dc=example,dc=org
+changetype: add
+ou: test
+objectClass: organizationalUnit
+
+dn: ou=prod,ou=groups,dc=example,dc=org
+changetype: add
+ou: prod
+objectClass: organizationalUnit
+
+
+dn: cn=testGroup1,ou=test,ou=groups,dc=example,dc=org
+changetype: add
+member: cn=remote_test_user_1@test.com,ou=Users,dc=example,dc=org
+member: cn=remote_test_user_2@test.com,ou=Users,dc=example,dc=org
+member: cn=remote_test_user_3@test.com,ou=Users,dc=example,dc=org
+cn: testGroup1
+objectClass: groupOfNames
+objectClass: top
+objectClass: uidObject
+uid: cd42f828-dc4a-11ec-9d64-0242ac120002
+
+dn: cn=prodGroup1,ou=prod,ou=groups,dc=example,dc=org
+changetype: add
+member: cn=remote_test_user_3@test.com,ou=Users,dc=example,dc=org
+member: cn=remote_test_user_4@test.com,ou=Users,dc=example,dc=org
+member: cn=remote_test_user_5@test.com,ou=Users,dc=example,dc=org
+cn: prodGroup1
+objectClass: groupOfNames
+objectClass: top
+objectClass: uidObject
+uid: 04009ba8-dc4c-11ec-9d64-0242ac120002
