@@ -9,7 +9,7 @@ echo "--------------------------"
 echo "--------------------------------------"
 echo "| Step 2: Wait for Keycloak to start |"
 echo "--------------------------------------"
-
+echo "Waiting for keycloak to start........"
 # Keycloak container no longer has curl installed...
 #until curl http://keycloak:8080 -sf -o /dev/null;
 #do
