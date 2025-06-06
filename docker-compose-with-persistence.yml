@@ -1,23 +1,40 @@
 name: keycloak_stack
 services:
   
-  
-# keycloak without persisted database (for automated configuration)
+
+  postgresql:
+    image: postgres:17.5
+    container_name: keycloak_postgres_container
+    ports:
+      - "5435:5435"
+    environment:
+      POSTGRES_DB: keycloakdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+# keycloak with a persisted database (for manual configuration)
   keycloak:
     image: quay.io/keycloak/keycloak:26.2.5
     container_name: keycloak_container
     depends_on:
+      - postgresql
       - openldap
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+      KC_DB_URL_HOST: postgresql
+      KC_DB_URL_DATABASE: keycloakdb
       KC_HOSTNAME: localhost
-    volumes:
-      - ./keycloak/init:/init
+    command:
+      - start-dev
     ports:
       - "8080:8080"
-    entrypoint: /init/entrypoint.sh
-
+  
   openldap:
     image: osixia/openldap:latest
     environment:
@@ -55,3 +72,4 @@ networks:
 volumes:
   ldap_data:
   ldap_config:
+  pgdata:
