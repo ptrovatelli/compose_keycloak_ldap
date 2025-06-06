@@ -25,7 +25,12 @@ echo "------------------------"
 ${KEYCLOAK_HOME}/bin/kcadm.sh create realms -s id=${KEYCLOAK_REALM} -s realm="${KEYCLOAK_REALM}" -s enabled=true -s displayName="${KEYCLOAK_REALM_DISPLAY_NAME}" -s loginWithEmailAllowed=false
 
 echo "----------------------------------------"
-echo "| Step C.1: Create LDAP Storage Provider |"
+echo "| Step C.1: Create LDAP group |"
+echo "----------------------------------------"
+${KEYCLOAK_HOME}/bin/kcadm.sh create groups -r  ${KEYCLOAK_REALM} -s name=LDAP
+
+echo "----------------------------------------"
+echo "| Step C.2: Create LDAP Storage Provider |"
 echo "----------------------------------------"
 ${KEYCLOAK_HOME}/bin/kcadm.sh create components -r ${KEYCLOAK_REALM} -s parentId=${KEYCLOAK_REALM} \
     -s id=${KEYCLOAK_REALM}-ldap-provider -s name=${KEYCLOAK_REALM}-ldap-provider \
@@ -40,7 +45,7 @@ ${KEYCLOAK_HOME}/bin/kcadm.sh create components -r ${KEYCLOAK_REALM} -s parentId
     -s config.serverPrincipal='[""]' \
     -s config.bindDn="${KEYCLOAK_BIND_DN}" \
     -s config.bindCredential=${KEYCLOAK_BIND_CREDENTIAL} \
-    -s 'config.fullSyncPeriod=["86400"]' \
+    -s 'config.fullSyncPeriod=[]' \
     -s 'config.changedSyncPeriod=["-1"]' \
     -s 'config.cachePolicy=["NO_CACHE"]' \
     -s config.evictionDay=[] \
@@ -48,7 +53,7 @@ ${KEYCLOAK_HOME}/bin/kcadm.sh create components -r ${KEYCLOAK_REALM} -s parentId
     -s config.evictionMinute=[] \
     -s config.maxLifespan=[] \
     -s config.importEnabled='["true"]' \
-    -s 'config.batchSizeForSync=["1000"]' \
+    -s 'config.batchSizeForSync=[]' \
     -s 'config.syncRegistrations=["false"]' \
     -s 'config.usernameLDAPAttribute=["uid"]' \
     -s 'config.rdnLDAPAttribute=["uid"]' \
@@ -63,8 +68,10 @@ ${KEYCLOAK_HOME}/bin/kcadm.sh create components -r ${KEYCLOAK_REALM} -s parentId
     -s config.kerberosRealm='[""]' \
     -s config.useKerberosForPasswordAuthentication=${KEYCLOAK_KERBEROS_FOR_PASS}
 
+# (it won't set useTruststoreSpi=Always)
+
 echo "----------------------------------------"
-echo "| Step C.2: Create group LDAP mapper |"
+echo "| Step C.3: Create group LDAP mapper |"
 echo "----------------------------------------"
 ${KEYCLOAK_HOME}/bin/kcadm.sh  create components \
     -r ${KEYCLOAK_REALM} \
@@ -78,12 +85,11 @@ ${KEYCLOAK_HOME}/bin/kcadm.sh  create components \
     -s 'config."preserve.group.inheritance"=["false"]' \
     -s 'config."membership.ldap.attribute"=["member"]' \
     -s 'config."membership.attribute.type"=["DN"]' \
-    -s 'config."groups.ldap.filter"=["(!(cn='testGroup1'))"]' \
+    -s 'config."groups.ldap.filter"=["(!(cn=testGroup1))"]' \
     -s 'config.mode=["READ_ONLY"]' \
     -s 'config."user.roles.retrieve.strategy"=["LOAD_GROUPS_BY_MEMBER_ATTRIBUTE"]' \
     -s 'config."mapped.group.attributes"=[""]' \
     -s 'config."drop.non.existing.groups.during.sync"=["true"]' \
-    -s 'config.roles=["admins"]' \
     -s 'config.groups=[""]' \
     -s 'config.group=[]' \
     -s 'config.preserve=["false"]' \
@@ -98,3 +104,9 @@ echo "-------------------------------"
 echo "| Step E: Query for firstName |"
 echo "-------------------------------"
 ${KEYCLOAK_HOME}/bin/kcadm.sh get users -r ${KEYCLOAK_REALM} | grep firstName
+
+
+echo "-------------------------------"
+echo "| Step F: Query for group names |"
+echo "-------------------------------"
+${KEYCLOAK_HOME}/bin/kcadm.sh get groups -r ${KEYCLOAK_REALM} | grep name
